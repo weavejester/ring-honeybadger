@@ -8,4 +8,5 @@
                  [clj-stacktrace "0.2.7"]
                  [ring/ring-core "1.2.1"]]
   :profiles
-  {:dev {:dependencies [[clj-http-fake "0.4.1"]]}})
+  {:dev {:dependencies [[clj-http-fake "0.4.1"]
+                        [ring-mock "0.1.5"]]}})

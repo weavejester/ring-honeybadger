@@ -43,8 +43,6 @@
 (defn send-exception! [ex request options]
   (http/post endpoint {:content-type :json
                        :accept :json
-                       :save-request? true
-                       :debug-body true
                        :headers {"X-API-Key" (:api-key options)}
                        :body (json/generate-string
                               (honeybadger-map ex request options))}))

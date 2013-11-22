@@ -1,27 +1,27 @@
 (ns ring.middleware.honeybadger-test
   (:use clojure.test
-        clj-http.fake
-        ring.middleware.honeybadger
-        clojure.pprint))
+        ring.middleware.honeybadger)
+  (:require [ring.mock.request :as mock]
+            [clj-http.fake :as fake]
+            [cheshire.core :as json]))
 
 (defn erroring-handler [request]
   (throw (Exception. "Something went wrong")))
 
 (def sent-data (atom []))
 
-(defn fake-honeybadger [request]
-  (swap! sent-data conj (:body request))
+(defn fake-endpoint [request]
+  (swap! sent-data conj (-> request :body .getContent slurp (json/parse-string true)))
   {:status 200, :headers {}, :body ""})
 
-(defmacro with-fake-honeybadger [& body]
-  `(with-fake-routes {endpoint fake-honeybadger}
-     ~@body))
+(defmacro with-fake-endpoint [& body]
+  `(fake/with-fake-routes {endpoint fake-endpoint} ~@body))
 
 (deftest test-wrap-honeybadger
-  (let [handler (wrap-honeybadger erroring-handler {})]
-    (with-fake-honeybadger
-      (is (thrown? Throwable (handler {})))
+  (let [handler (wrap-honeybadger erroring-handler {:api-key "XXXXXXX"})]
+    (with-fake-endpoint
+      (is (thrown? Throwable (handler (mock/request :get "/"))))
       (let [data (first @sent-data)]
         (is (= (get-in data [:notifier :name]) "Ring Honeybadger Middleware"))
-        (is (= (get-in data [:error :class]) "java.lang.Exception"))
+        (is (= (get-in data [:error :class])   "java.lang.Exception"))
         (is (= (get-in data [:error :message]) "Something went wrong"))))))

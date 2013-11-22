@@ -14,18 +14,23 @@
   (.getCanonicalPath (io/file ".")))
 
 (defn honeybadger-map [ex options]
-  {:notifier {:name "Ring Honeybadger Middleware"
-              :url "https://github.com/weavejester/ring-honeybadger"
-              :version "1.3.0"}
-   :error {:class     (.getName (:class ex))
-           :message   (:message ex)
-           :backtrace (for [t (:trace-elems ex)]
-                        {:number (:line t)
-                         :file   (:file t)
-                         :method (or (:method t) (:fn t))})}
-   :server {:project_root     {:path current-dir}
-            :environment_name (:env options "development")
-            :hostname         hostname}})
+  {:notifier
+   {:name "Ring Honeybadger Middleware"
+    :url "https://github.com/weavejester/ring-honeybadger"
+    :version "1.3.0"}
+   
+   :error
+   {:class     (.getName (:class ex))
+    :message   (:message ex)
+    :backtrace (for [trace (:trace-elems ex)]
+                 {:number (:line trace)
+                  :file   (:file trace)
+                  :method (or (:method trace) (:fn trace))})}
+
+   :server
+   {:project_root     {:path current-dir}
+    :environment_name (:env options "development")
+    :hostname         hostname}})
 
 (defn send-exception! [ex options]
   (http/post endpoint {:content-type :json

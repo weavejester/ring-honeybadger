@@ -2,6 +2,9 @@
   (:use clojure.test
         ring.middleware.honeybadger))
 
-(deftest a-test
-  (testing "FIXME, I fail."
-    (is (= 0 1))))
+(defn erroring-handler [request]
+  (throw (Exception. "Something went wrong")))
+
+(deftest test-wrap-honeybadger
+  (let [handler (wrap-honeybadger erroring-handler)]
+    (handler {})))

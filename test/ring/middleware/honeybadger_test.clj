@@ -22,6 +22,13 @@
     (with-fake-endpoint
       (is (thrown? Throwable (handler (mock/request :get "/"))))
       (let [data (first @sent-data)]
-        (is (= (get-in data [:notifier :name]) "Ring Honeybadger Middleware"))
-        (is (= (get-in data [:error :class])   "java.lang.Exception"))
-        (is (= (get-in data [:error :message]) "Something went wrong"))))))
+        (testing "data exists"
+          (is (map? (:notifier data)))
+          (is (map? (:error data)))
+          (is (map? (:request data)))
+          (is (map? (:server data))))
+
+        (testing "notifier"
+          (is (= (get-in data [:notifier :name]) "Ring Honeybadger Middleware"))
+          (is (= (get-in data [:error :class])   "java.lang.Exception"))
+          (is (= (get-in data [:error :message]) "Something went wrong")))))))

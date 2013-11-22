@@ -17,7 +17,8 @@
   {:notifier
    {:name "Ring Honeybadger Middleware"
     :url "https://github.com/weavejester/ring-honeybadger"
-    :version "1.3.0"}
+    :version "1.3.0"
+    :language "clojure"}
    
    :error
    {:class     (.getName (:class ex))

@@ -1,6 +1,7 @@
 (ns ring.middleware.honeybadger
   (:require [clj-stacktrace.core :as st]
-            [clj-http.client :as http]))
+            [clj-http.client :as http]
+            [cheshire.core :as json]))
 
 (def endpoint
   "https://api.honeybadger.io/v1/notices")
@@ -19,8 +20,8 @@
 (defn send-exception! [ex options]
   (http/post endpoint {:content-type :json
                        :accept :json
-                       :as :json
-                       :body (honeybadger-map ex options)}))
+                       :headers {"X-API-Key" (:api-key options)}
+                       :body (json/generate-string (honeybadger-map ex options))}))
 
 (defn wrap-honeybadger [handler options]
   (fn [request]

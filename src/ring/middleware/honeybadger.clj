@@ -28,6 +28,8 @@
                   :file   (:file trace)
                   :method (or (:method trace) (:fn trace))})}
 
+   :request {}
+
    :server
    {:project_root     {:path current-dir}
     :environment_name (:env options "development")

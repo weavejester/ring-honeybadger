@@ -8,7 +8,7 @@ Ring middleware designed to log exceptions to [Honeybadger][1].
 
 To install, add the following to your project dependencies:
 
-    [ring-honeybadger "0.1.0-SNAPSHOT"]
+    [ring-honeybadger "0.1.0"]
 
 ## Usage
 

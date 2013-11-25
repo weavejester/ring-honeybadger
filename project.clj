@@ -1,4 +1,4 @@
-(defproject ring-honeybadger "0.1.0-SNAPSHOT"
+(defproject ring-honeybadger "0.1.0"
   :description "Ring middleware for logging exceptions to honeybadger.io"
   :url "https://github.com/weavejester/ring-honeybadger"
   :license {:name "Eclipse Public License"
